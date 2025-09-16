@@ -13,12 +13,28 @@ jobs:
           name: Install dependencies
           command: |
             cd bankchurn-api
+            echo "Current directory: $(pwd)"
+            echo "Python version: $(python --version)"
+            echo "Pip version: $(pip --version)"
+            echo "Available Python versions:"
+            ls -la /usr/bin/python*
+            echo "Removing .python-version to avoid pyenv conflicts"
+            rm -f .python-version
+            python -m venv venv
+            source venv/bin/activate
+            echo "Virtual env Python version: $(python --version)"
+            pip install --upgrade pip
+            echo "Installing requirements.txt..."
             pip install -r requirements.txt
+            echo "Installing test_requirements.txt..."
             pip install -r test_requirements.txt
+            echo "Installed packages:"
+            pip list
       - run:
           name: Run tests
           command: |
             cd bankchurn-api
+            source venv/bin/activate
             python --version
             pip list
             echo "Current directory: $(pwd)"
@@ -36,6 +52,7 @@ jobs:
           name: Run linting
           command: |
             cd bankchurn-api
+            source venv/bin/activate
             python -m flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
             python -m mypy app/ --ignore-missing-imports
 
@@ -53,6 +70,17 @@ jobs:
           name: Deploy to Railway
           command: |
             cd bankchurn-api
+            echo "Checking Railway CLI installation..."
+            railway --version
+            echo "Checking Railway authentication..."
+            if [ -z "$RAILWAY_TOKEN" ]; then
+              echo "ERROR: RAILWAY_TOKEN environment variable is not set!"
+              echo "Please configure RAILWAY_TOKEN in CircleCI project settings."
+              exit 1
+            else
+              echo "RAILWAY_TOKEN is set (length: ${#RAILWAY_TOKEN})"
+            fi
+            echo "Deploying to Railway..."
             railway up --service=maiacicd --detach
           environment:
             RAILWAY_TOKEN: $RAILWAY_TOKEN
