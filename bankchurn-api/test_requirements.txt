@@ -1,8 +1,8 @@
 -r requirements.txt
 
 # testing requirements
-pytest==7.4.4
-requests==2.32.5
-httpx==0.27.0
-flake8==7.0.0
-mypy==1.11.2
+pytest>=7.0.0,<8.0.0
+requests>=2.25.0,<3.0.0
+httpx>=0.20.0,<1.0.0
+flake8>=5.0.0,<8.0.0
+mypy>=1.0.0,<2.0.0
