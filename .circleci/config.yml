@@ -1,0 +1,54 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.1.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          app-dir: bankchurn-api
+      - run:
+          name: Run tests
+          command: |
+            cd bankchurn-api
+            python -m pytest app/tests/ -v
+      - run:
+          name: Run linting
+          command: |
+            cd bankchurn-api
+            python -m flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+            python -m mypy app/ --ignore-missing-imports
+
+  deploy:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Install Railway CLI
+          command: |
+            curl -fsSL https://railway.com/install.sh | sh
+            echo 'export PATH="$HOME/.railway/bin:$PATH"' >> $BASH_ENV
+      - run:
+          name: Deploy to Railway
+          command: |
+            cd bankchurn-api
+            railway up --detach
+          environment:
+            RAILWAY_TOKEN: $RAILWAY_TOKEN
+
+workflows:
+  test-and-deploy:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
