@@ -1,13 +1,7 @@
-from pydantic_settings import BaseSettings
-
-
-class AppConfig(BaseSettings):
+class AppConfig:
     """Application settings."""
     
     test_data_file: str = "test_data.csv"
-    
-    class Config:
-        env_file = ".env"
 
 
 class Config:

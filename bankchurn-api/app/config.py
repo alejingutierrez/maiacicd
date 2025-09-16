@@ -4,14 +4,14 @@ from types import FrameType
 from typing import List, cast
 
 from loguru import logger
-from pydantic import AnyHttpUrl, BaseSettings
+from pydantic import AnyHttpUrl
 
 # Nivel del logger
-class LoggingSettings(BaseSettings):
+class LoggingSettings:
     LOGGING_LEVEL: int = logging.INFO  # logging levels are type int
 
 # Configuración de raíz de la ruta, logger, CORS, nombre 
-class Settings(BaseSettings):
+class Settings:
     API_V1_STR: str = "/api/v1"
 
     # Meta
@@ -27,9 +27,6 @@ class Settings(BaseSettings):
     ]
 
     PROJECT_NAME: str = "Banckchurn API"
-
-    class Config:
-        case_sensitive = True
 
 # Intercepción de mensajes de loggers 
 # See: https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging  
