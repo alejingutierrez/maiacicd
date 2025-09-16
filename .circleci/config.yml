@@ -87,7 +87,7 @@ jobs:
             echo "Checking Railway projects..."
             railway projects
             echo "Linking to Railway project..."
-            railway link --project f1151051-b81b-49d7-a5ab-99f86317cad1
+            railway link --project 4367bfe8-193f-4d3e-a580-2a6449f97714
             echo "Deploying to Railway..."
             railway up --service=maiacicd --detach
           environment:
