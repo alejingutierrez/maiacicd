@@ -82,14 +82,15 @@ jobs:
             fi
             echo "Setting Railway environment variables..."
             export RAILWAY_TOKEN=$RAILWAY_TOKEN
+            export RAILWAY_PROJECT_ID=f1151051-b81b-49d7-a5ab-99f86317cad1
             echo "Creating Railway config file..."
             mkdir -p ~/.railway
             echo "{\"token\":\"$RAILWAY_TOKEN\"}" > ~/.railway/token.json
             echo "Deploying to Railway..."
-            railway up --service=maiacicd --detach
+            railway up --service=102676bd-5a32-41a2-ba57-2efd6bc753db --detach
           environment:
             RAILWAY_TOKEN: $RAILWAY_TOKEN
-            RAILWAY_PROJECT_ID: 4367bfe8-193f-4d3e-a580-2a6449f97714
+            RAILWAY_PROJECT_ID: f1151051-b81b-49d7-a5ab-99f86317cad1
 
 workflows:
   test-and-deploy:
