@@ -6,16 +6,31 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/python:3.12
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          app-dir: bankchurn-api
+      - run:
+          name: Install dependencies
+          command: |
+            cd bankchurn-api
+            pip install -r requirements.txt
+            pip install -r test_requirements.txt
       - run:
           name: Run tests
           command: |
             cd bankchurn-api
+            python --version
+            pip list
+            echo "Current directory: $(pwd)"
+            echo "Contents of current directory:"
+            ls -la
+            echo "Contents of app directory:"
+            ls -la app/
+            echo "Contents of app/tests directory:"
+            ls -la app/tests/
+            export PYTHONPATH=.
+            export PYTHONHASHSEED=0
+            echo "PYTHONPATH: $PYTHONPATH"
             python -m pytest app/tests/ -v
       - run:
           name: Run linting
@@ -26,7 +41,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/python:3.12
     steps:
       - checkout
       - run:
@@ -38,7 +53,7 @@ jobs:
           name: Deploy to Railway
           command: |
             cd bankchurn-api
-            railway up --detach
+            railway up --service=maiacicd --detach
           environment:
             RAILWAY_TOKEN: $RAILWAY_TOKEN
 
