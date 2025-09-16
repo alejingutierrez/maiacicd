@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 import pandas as pd
 from fastapi.testclient import TestClient
@@ -14,7 +12,7 @@ def test_make_prediction(client: TestClient, test_data: pd.DataFrame) -> None:
 
     # When
     response = client.post(
-        "http://localhost:8001/api/v1/predict",
+        "/api/v1/predict",
         json=payload,
     )
 
@@ -23,4 +21,17 @@ def test_make_prediction(client: TestClient, test_data: pd.DataFrame) -> None:
     prediction_data = response.json()
     assert prediction_data["predictions"]
     assert prediction_data["errors"] is None
-    assert math.isclose(prediction_data["predictions"][0], 113422, rel_tol=100)
+    # Check that we get a valid prediction (0 or 1 for churn prediction)
+    assert prediction_data["predictions"][0] in [0, 1]
+
+
+def test_health_endpoint(client: TestClient) -> None:
+    # When
+    response = client.get("/api/v1/health")
+    
+    # Then
+    assert response.status_code == 200
+    health_data = response.json()
+    assert "name" in health_data
+    assert "api_version" in health_data
+    assert "model_version" in health_data
