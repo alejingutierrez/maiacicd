@@ -81,7 +81,7 @@ jobs:
               echo "RAILWAY_TOKEN is set (length: ${#RAILWAY_TOKEN})"
             fi
             echo "Setting Railway token..."
-            railway auth $RAILWAY_TOKEN
+            export RAILWAY_TOKEN=$RAILWAY_TOKEN
             echo "Checking Railway status..."
             railway status
             echo "Checking Railway projects..."
